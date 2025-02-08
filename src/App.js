@@ -10,22 +10,6 @@ const stringList = [
   "",
 ];
 
-const Hearts = () => {
-  return (
-    <div className="hearts">
-      {[...Array(10)].map((_, index) => (
-        <motion.div
-          key={index}
-          className="heart"
-          initial={{ opacity: 0, y: 50, x: 50 }}
-          animate={{ opacity: 1, y: 0, x: 0 }}
-          transition={{ duration: 1, delay: index * 0.3 }}
-        />
-      ))}
-    </div>
-  );
-};
-
 const RotatingMessages = () => {
   const [index, setIndex] = useState(0);
   const [text, setText] = useState("");
@@ -73,7 +57,6 @@ const RotatingMessages = () => {
         exit={{ opacity: 0 }}
         className="text"
       >
-        {index === 0 && <Hearts />}
         {text}
       </motion.div>
     </AnimatePresence>
