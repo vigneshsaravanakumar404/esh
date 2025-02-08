@@ -3,14 +3,47 @@ import { motion, AnimatePresence } from "framer-motion";
 import "./App.css";
 
 const stringList = [
-  "Hallo!",
-  "Are you eshhhh?",
-  "I should confirm just to be sure",
-  "Good luck!",
-  "",
+  "Hello Eshhhhhhh!",
+  "Happy Valentine's Day!",
+  "Do you want to be my valentine",
 ];
 
-const RotatingMessages = () => {
+const useConfetti = () => {
+  useEffect(() => {
+    // Start confetti when the component mounts
+    const duration = 60 * 60 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = {
+      spread: 360,
+      ticks: 100,
+      gravity: 0,
+      zIndex: 0,
+      startVelocity: 30,
+      shapes: ["heart"],
+      colors: ["FFC0CB", "FF69B4", "FF1493", "C71585"],
+    };
+
+    const interval = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        return;
+      }
+
+      window.confetti({
+        ...defaults,
+        particleCount: 1,
+        scalar: 5,
+        origin: { x: Math.random(), y: Math.random() * 0.1 },
+      });
+    }, 150);
+
+    return () => clearInterval(interval); // Stop confetti when component unmounts
+  }, []);
+};
+
+const RotatingMessages = ({ onFinish }) => {
   const [index, setIndex] = useState(0);
   const [text, setText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -38,7 +71,10 @@ const RotatingMessages = () => {
 
         if (loopNum + 1 === stringList.length) {
           setIsFinished(true);
-          setTimeout(() => setIsFinished(false), 3000);
+          setTimeout(() => {
+            setIsFinished(false);
+            onFinish(); // Notify parent component that rotation is done
+          }, 3000);
         }
       }
     };
@@ -46,7 +82,9 @@ const RotatingMessages = () => {
     const typingTimeout = setTimeout(handleType, typingSpeed);
 
     return () => clearTimeout(typingTimeout);
-  }, [text, isDeleting, loopNum, typingSpeed, isFinished]);
+  }, [text, isDeleting, loopNum, typingSpeed, isFinished, onFinish]);
+
+  useConfetti();
 
   return (
     <AnimatePresence>
@@ -75,17 +113,13 @@ const NewContent = () => {
 const Main = () => {
   const [showNewContent, setShowNewContent] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowNewContent(true); // Show new content after all messages are displayed
-    }, stringList.length * 3000); // Total duration based on number of messages
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div className="container">
-      {showNewContent ? <NewContent /> : <RotatingMessages />}
+      {showNewContent ? (
+        <NewContent />
+      ) : (
+        <RotatingMessages onFinish={() => setShowNewContent(true)} />
+      )}
     </div>
   );
 };

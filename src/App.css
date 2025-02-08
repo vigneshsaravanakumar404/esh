@@ -16,7 +16,6 @@ body {
 }
 
 .text {
-  font-size: 5em;
+  font-size: 10vw;
   font-weight: 900;
-  /* Use the maximum weight from the font */
 }
