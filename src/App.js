@@ -225,6 +225,7 @@ const NewContent = () => {
       "/20241118_152558093_iOS.png",
       "/20241118_152554473_iOS.png"
     ];
+
     const body = document.querySelector("body");
 
     for (let i = 0; i < imageCount; i++) {
