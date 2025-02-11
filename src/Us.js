@@ -84,7 +84,7 @@ const Us = () => {
         >
           <img
             src="/EshVishUs.jpg"
-            alt="Image 2"
+            alt="Esh and Vish together"
             style={{
               width: "90%",
               height: "auto",
