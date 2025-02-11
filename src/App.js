@@ -191,9 +191,57 @@ const NewContent = () => {
     }, 5000);
   };
 
-  const handleDangerClick = () => {
-    alert("You clicked No! 💔");
+
+  // Spam Popups
+  const spam = () => {
+    const imageCount = 50;
+    const images = [
+      "/20241118_152739565_iOS.png",
+      "/20241118_152735920_iOS.png",
+      "/20241118_152732646_iOS.png",
+      "/20241118_152729317_iOS.png",
+      "/20241118_152725774_iOS.png",
+      "/20241118_152721858_iOS.png",
+      "/20241118_152718198_iOS.png",
+      "/20241118_152713132_iOS.png",
+      "/20241118_152709974_iOS.png",
+      "/20241118_152706894_iOS.png",
+      "/20241118_152703749_iOS.png",
+      "/20241118_152700521_iOS.png",
+      "/20241118_152657464_iOS.png",
+      "/20241118_152653338_iOS.png",
+      "/20241118_152648987_iOS.png",
+      "/20241118_152645209_iOS.png",
+      "/20241118_152641358_iOS.png",
+      "/20241118_152638283_iOS.png",
+      "/20241118_152633678_iOS.png",
+      "/20241118_152628392_iOS.png",
+      "/20241118_152624044_iOS.png",
+      "/20241118_152616477_iOS.png",
+      "/20241118_152612803_iOS.png",
+      "/20241118_152608592_iOS.png",
+      "/20241118_152605038_iOS.png",
+      "/20241118_152601792_iOS.png",
+      "/20241118_152558093_iOS.png",
+      "/20241118_152554473_iOS.png"
+    ];
+    const body = document.querySelector("body");
+
+    for (let i = 0; i < imageCount; i++) {
+      const img = document.createElement("img");
+      const imageUrl = images[Math.floor(Math.random() * images.length)];
+      img.src = imageUrl;
+      img.style.position = "absolute";
+      img.style.width = "100px";  // Adjust image size if necessary
+      img.style.height = "100px"; // Adjust image size if necessary
+      img.style.left = Math.random() * (window.innerWidth - 100) + "px";
+      img.style.top = Math.random() * (window.innerHeight - 100) + "px";
+      img.style.zIndex = 9999; // Ensure the images are on top of other elements
+      body.appendChild(img);
+    }
   };
+
+
 
   const toast = useRef(null);
 
@@ -202,9 +250,11 @@ const NewContent = () => {
       severity: "error",
       summary: "Confirmed",
       detail: "Downloading Esh Virus...",
-      life: 3000,
+      life: 5000,
     });
     setDownloadBarActive(true);
+    setTimeout(spam, 1000); // Call spam after 1 second
+    setTimeout(() => setDownloadBarActive(false), 1000);
   };
 
   const reject = () => {
@@ -415,6 +465,7 @@ const NewContent = () => {
         </Card>
 
       </div>
+      <Toast ref={toast} />
     </div>
   );
 };
