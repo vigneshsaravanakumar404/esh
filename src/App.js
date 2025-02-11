@@ -3,11 +3,14 @@ import "primereact/resources/themes/lara-dark-blue/theme.css";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { Avatar } from "primereact/avatar";
-import { Tooltip } from "primereact/tooltip";
+import { Dialog } from 'primereact/dialog';
+import { Checkbox } from 'primereact/checkbox';
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useEffect, useState, useRef } from "react";
+
 
 /* Constants */
 const stringList = [
@@ -31,8 +34,10 @@ const stringList = [
  *   return <div>Celebrate!</div>;
  * };
  */
-const useConfetti = () => {
+const useConfetti = (isActive) => {
   useEffect(() => {
+    if (!isActive) return;
+
     // Start confetti when the component mounts
     const duration = 60 * 60 * 1000;
     const animationEnd = Date.now() + duration;
@@ -46,6 +51,13 @@ const useConfetti = () => {
       colors: ["FFC0CB", "FF69B4", "FF1493", "C71585"],
     };
 
+    window.confetti({
+      ...defaults,
+      particleCount: 150,
+      scalar: 5,
+      origin: { x: 0.5, y: 0.25 },
+    });
+
     const interval = setInterval(() => {
       const timeLeft = animationEnd - Date.now();
 
@@ -56,14 +68,14 @@ const useConfetti = () => {
 
       window.confetti({
         ...defaults,
-        particleCount: 1,
+        particleCount: 10,
         scalar: 5,
         origin: { x: Math.random(), y: Math.random() * 0.1 },
       });
     }, 150);
 
     return () => clearInterval(interval); // Stop confetti when component unmounts
-  }, []);
+  }, [isActive]);
 };
 
 /**
@@ -84,7 +96,7 @@ const RotatingMessages = ({ onFinish }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
-  const typingSpeed = isDeleting ? 1 : 1; //! CHANGE TO 30 : 50
+  const typingSpeed = isDeleting ? 1 : 1; //! Change back to 30 : 50
 
   useEffect(() => {
     if (isFinished) return;
@@ -98,7 +110,7 @@ const RotatingMessages = ({ onFinish }) => {
       setText(updatedText);
 
       if (!isDeleting && updatedText === fullText) {
-        setTimeout(() => setIsDeleting(true), 1); //! CHANGE TO 2500
+        setTimeout(() => setIsDeleting(true), 0); //! Change back to 2500
       } else if (isDeleting && updatedText === "") {
         setIsDeleting(false);
         setLoopNum(loopNum + 1);
@@ -109,7 +121,7 @@ const RotatingMessages = ({ onFinish }) => {
           setTimeout(() => {
             setIsFinished(false);
             onFinish(); // Notify parent component that rotation is done
-          }, 1); //! CHANGE TO 3000
+          }, 0); //! Change back to 3000
         }
       }
     };
@@ -149,13 +161,34 @@ const RotatingMessages = ({ onFinish }) => {
  */
 const NewContent = () => {
   const [visible, setVisible] = useState(false);
+  const [confettiActive, setConfettiActive] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const [visibleDialog, setVisibleDialog] = useState(false);
+  const [downloadBarActive, setDownloadBarActive] = useState(false);
+
+
 
   useEffect(() => {
     setTimeout(() => setVisible(true), 200);
   }, []);
 
+  useEffect(() => {
+    if (confettiActive) {
+      setTimeout(() => setConfettiActive(false), 5000); // Confetti will stop after 5 seconds
+    }
+  }, [confettiActive]);
+
   const handleSuccessClick = () => {
-    alert("You clicked Yes! 💖");
+    if (!checked) {
+      alert("Please accept the terms and conditions first! 😠");
+      return;
+    }
+
+    setConfettiActive(true);
+
+    setTimeout(() => {
+      window.location.href = "/us";
+    }, 5000);
   };
 
   const handleDangerClick = () => {
@@ -166,33 +199,40 @@ const NewContent = () => {
 
   const accept = () => {
     toast.current.show({
-      severity: "info",
+      severity: "error",
       summary: "Confirmed",
-      detail: "You have accepted",
+      detail: "Downloading Esh Virus...",
       life: 3000,
     });
+    setDownloadBarActive(true);
   };
 
   const reject = () => {
     toast.current.show({
-      severity: "warn",
-      summary: "Rejected",
-      detail: "You have rejected",
+      severity: "success",
+      summary: "Thats what I thought",
+      detail: "You are not a meanie",
       life: 3000,
     });
   };
 
   const confirm = () => {
     confirmDialog({
-      message: "Do you want to delete this record?",
-      header: "Delete Confirmation",
+      message: "Are you sure you want to become a meanie?",
+      header: "Become Menie",
       icon: "pi pi-info-circle",
-      defaultFocus: "reject",
+      defaultFocus: "error",
       acceptClassName: "p-button-danger",
       accept,
       reject,
     });
   };
+
+  const handleDialog = () => {
+    setVisibleDialog(true);
+  };
+
+  useConfetti(confettiActive);
 
   return (
     <div
@@ -201,11 +241,13 @@ const NewContent = () => {
         backgroundColor: "#000000",
         height: "100vh",
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        padding: "1rem",
+        padding: "3rem",
       }}
     >
+      {downloadBarActive && <ProgressSpinner style={{ width: '50px', height: '50px' }} strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s" />}
       <div
         className="card-container"
         style={{
@@ -214,7 +256,8 @@ const NewContent = () => {
           transform: visible ? "translateY(0)" : "translateY(30px)",
           opacity: visible ? 1 : 0,
           transition: "opacity 0.8s ease, transform 0.8s ease",
-          center: { display: "flex", justifyContent: "center" },
+          display: "flex",
+          justifyContent: "center",
         }}
       >
         <Card
@@ -223,7 +266,7 @@ const NewContent = () => {
           style={{
             textAlign: "center",
             background:
-              "linear-gradient(135deg,rgb(112, 2, 6) 0%,rgb(107, 3, 100) 100%)",
+              "linear-gradient(135deg, rgb(112, 2, 6) 0%, rgb(107, 3, 100) 100%)",
             padding: "1rem",
             borderRadius: "20px",
             boxShadow: "0 8px 20px rgba(255, 182, 193, 0.6)",
@@ -248,24 +291,70 @@ const NewContent = () => {
               objectFit: "cover",
             }}
           />
-          <p
-            className="m-0"
-            style={{
-              marginBottom: "1.5rem",
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              color: "#fff",
-              textShadow: "2px 2px 5px rgba(0, 0, 0, 0.2)",
-            }}
-          >
-            Would you be my Valentine? 💕
-          </p>
+
           <Toast ref={toast} />
           <ConfirmDialog />
+          <Dialog
+            header="Vish's Valentine Terms and Conditions 🐟"
+            visible={visibleDialog}
+            style={{ width: "75vw" }}
+            onHide={() => setVisibleDialog(false)}
+          >
+            <ol className="m-0">
+              <li>No take backs on becoming valentine</li>
+              <li>Unlimited Esh hugs</li>
+              <li>Frequent Esh Pictures and Fit Checks</li>
+            </ol>
+          </Dialog>
+
+          <div className="p-field-checkbox" style={{ marginBottom: "1rem" }}>
+            <Checkbox
+              inputId="binary"
+              checked={checked}
+              onChange={(e) => setChecked(e.checked)}
+            />
+            <label
+              htmlFor="binary"
+              className="p-checkbox-label"
+              onClick={handleDialog}
+              style={{
+                cursor: "pointer",
+                alignItems: "center",
+                fontSize: "1rem",
+                lineHeight: "1.4",
+                flexWrap: "wrap",
+                marginLeft: "0.5rem",
+              }}
+            >
+              <span style={{ marginRight: "0.3rem" }}>
+                I accept Vish's Valentine
+              </span>
+
+              <span
+                style={{
+                  color: "#FF0000",
+                  textDecoration: "underline",
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
+              >
+                terms and conditions
+                <img
+                  src="https://static.thenounproject.com/png/1406946-200.png"
+                  alt="external link icon"
+                  style={{
+                    marginLeft: "0.3rem",
+                    width: "1rem",
+                    height: "1rem",
+                  }}
+                />
+              </span>
+            </label>
+          </div>
           <div
             style={{
               display: "flex",
-              gap: "0.5rem", // Reduced gap to move buttons closer
+              gap: "0.5rem",
               flexWrap: "wrap",
               justifyContent: "center",
             }}
@@ -318,11 +407,13 @@ const NewContent = () => {
               }}
               onMouseOut={(e) => {
                 e.target.style.transform = "scale(1)";
-                e.target.style.boxShadow = "0 4px 10px rgba(220, 20, 60, 0.5)";
+                e.target.style.boxShadow =
+                  "0 4px 10px rgba(220, 20, 60, 0.5)";
               }}
             />
           </div>
         </Card>
+
       </div>
     </div>
   );
