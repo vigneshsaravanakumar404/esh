@@ -96,7 +96,7 @@ const RotatingMessages = ({ onFinish }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [loopNum, setLoopNum] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
-  const typingSpeed = isDeleting ? 1 : 1; //! Change back to 30 : 50
+  const typingSpeed = isDeleting ? 30 : 50;
 
   useEffect(() => {
     if (isFinished) return;
@@ -110,7 +110,7 @@ const RotatingMessages = ({ onFinish }) => {
       setText(updatedText);
 
       if (!isDeleting && updatedText === fullText) {
-        setTimeout(() => setIsDeleting(true), 0); //! Change back to 2500
+        setTimeout(() => setIsDeleting(true), 2500);
       } else if (isDeleting && updatedText === "") {
         setIsDeleting(false);
         setLoopNum(loopNum + 1);
@@ -121,7 +121,7 @@ const RotatingMessages = ({ onFinish }) => {
           setTimeout(() => {
             setIsFinished(false);
             onFinish(); // Notify parent component that rotation is done
-          }, 0); //! Change back to 3000
+          }, 3000);
         }
       }
     };
