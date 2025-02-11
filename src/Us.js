@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 const message = (
   <>
-    I'm so happy you're my Valentine!!! I never thought this would happen again, but here we are! Two years in a row. I keep missing you every since we went to college. It's really sad I can't see my valentine everyday. I love you so much, and I hope we are each other's Valentines year after year.
+    I'm so happy you're my Valentine!!! I never thought this would happen again, but here we are! Two years in a row. I keep missing you ever since we went to college. It's really sad I can't see my valentine everyday. I love you so much, and I hope we are each other's Valentines year after year.
     <br />
     <br />
     P.S. Thank you for accepting the terms and conditions to get to this page. I tricked you hahaha 😊
