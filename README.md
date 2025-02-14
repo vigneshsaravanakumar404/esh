@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This project is impressive not due to its technical complexity but the fact that I have a girlfriend to send it to. The website serves as a way to ask my girlfriend to be my valentine.
+This project is impressive not due to its technical complexity but the fact that I have a girlfriend to send it to as a computer science major. The website serves as a way to ask my girlfriend to be my valentine.
 
 ## Technologies
 
